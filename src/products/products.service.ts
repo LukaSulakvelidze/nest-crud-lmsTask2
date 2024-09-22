@@ -19,7 +19,7 @@ export class ProductsService {
     {
       id: 2,
       name: 'Car',
-      category: 'Car',
+      category: 'Dealership',
       price: 132984,
       createdAt: 'Sat Sep 21 2024 / 16:11:28',
     },
@@ -52,11 +52,22 @@ export class ProductsService {
     return `${currentDate} / ${currentTime}`;
   }
 
-  getAllProducts(token, lang) {
-    if (token.admin !== 'true') throw new BadRequestException();
-    console.log(token.admin);
+  getAllProducts(token: boolean, filterQuery, lang: string) {
+    if (!token) throw new BadRequestException();
     if (lang == 'ka') return this.productsGeo;
-    return this.products;
+    if (filterQuery.category && filterQuery.price) {
+      return this.products
+        .filter((item) => item.category === filterQuery.category)
+        .filter((item) => item.price > filterQuery.price);
+    } else if (filterQuery.category) {
+      return this.products.filter(
+        (item) => item.category === filterQuery.category,
+      );
+    } else if (filterQuery.price) {
+      return this.products.filter((item) => item.price > filterQuery.price);
+    } else {
+      return this.products;
+    }
   }
 
   createProduct(productFields: productsDTO) {
@@ -72,14 +83,14 @@ export class ProductsService {
     return newProduct;
   }
 
-  getProductById(id) {
+  getProductById(id: number) {
     const product = this.products.find((el) => el.id === id);
     if (!product)
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     return product;
   }
 
-  deleteProduct(id) {
+  deleteProduct(id: number) {
     const index = this.products.findIndex((el) => el.id === id);
     if (index === -1)
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
@@ -87,8 +98,8 @@ export class ProductsService {
     return deletedProduct;
   }
 
-  updateProduct(id, newFields: productsDTO) {
-    const index = this.products.findIndex((el) => el.id === +id);
+  updateProduct(id: number, newFields: productsDTO) {
+    const index = this.products.findIndex((el) => el.id === id);
     if (index === -1)
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     this.products[index] = {

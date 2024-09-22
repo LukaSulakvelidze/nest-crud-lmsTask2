@@ -20,10 +20,12 @@ export class ProductsController {
 
   @Get('/')
   getProducts(
-    @Headers() header,
-    @Query('lang', new DefaultValuePipe('en')) query,
+    @Headers('admin') token: boolean,
+    @Query() filterQuery: { category: string; price: string },
+    @Query('lang', new DefaultValuePipe('en')) langQuery: string,
   ) {
-    return this.ProductsService.getAllProducts(header, query);
+    console.log(filterQuery);
+    return this.ProductsService.getAllProducts(token, filterQuery, langQuery);
   }
 
   @Post('/')
@@ -42,7 +44,10 @@ export class ProductsController {
   }
 
   @Put('/:id')
-  updateProduct(@Param('id') id: string, @Body() newFields): productsDTO {
+  updateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() newFields,
+  ): productsDTO {
     return this.ProductsService.updateProduct(id, newFields);
   }
 }
