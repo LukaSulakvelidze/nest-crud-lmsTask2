@@ -24,7 +24,6 @@ export class ProductsController {
     @Query() filterQuery: { category: string; price: string },
     @Query('lang', new DefaultValuePipe('en')) langQuery: string,
   ) {
-    console.log(filterQuery);
     return this.ProductsService.getAllProducts(token, filterQuery, langQuery);
   }
 

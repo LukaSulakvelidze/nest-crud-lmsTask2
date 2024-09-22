@@ -83,15 +83,15 @@ export class ProductsService {
     return newProduct;
   }
 
-  getProductById(id: number) {
-    const product = this.products.find((el) => el.id === id);
+  getProductById(id) {
+    const product = this.products.find((el) => el.id === +id);
     if (!product)
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     return product;
   }
 
   deleteProduct(id: number) {
-    const index = this.products.findIndex((el) => el.id === id);
+    const index = this.products.findIndex((el) => el.id === +id);
     if (index === -1)
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     const deletedProduct = this.products.splice(index, 1);
@@ -99,7 +99,7 @@ export class ProductsService {
   }
 
   updateProduct(id: number, newFields: productsDTO) {
-    const index = this.products.findIndex((el) => el.id === id);
+    const index = this.products.findIndex((el) => el.id === +id);
     if (index === -1)
       throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
     this.products[index] = {
